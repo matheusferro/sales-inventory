@@ -9,6 +9,7 @@ services:
     image: inventory-service
     ports:
       - "8080:8080"
+      - "5005:5005"
     environment:
       DB_URL: mongo-db
       DB_PORT: 27017
