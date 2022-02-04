@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 class SalesInventoryApplication
 
 fun main(args: Array<String>) {
-	runApplication<SalesInventoryApplication>(*args)
+    runApplication<SalesInventoryApplication>(*args)
 }

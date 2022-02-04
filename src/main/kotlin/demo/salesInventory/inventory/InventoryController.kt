@@ -13,7 +13,7 @@ class InventoryController(
     @PostMapping
     fun saveProduct(@Valid @RequestBody saveProductRequest: SaveProductRequest): ResponseEntity<SaveProductResponse> =
         ResponseEntity.ok(
-            SaveProductResponse(productRepository.save(saveProductRequest.toEntity()))
+            SaveProductResponse(productRepository.save(saveProductRequest.toEntity())).also { println("post") }
         )
 
     @PutMapping("/{productId}")
@@ -27,8 +27,11 @@ class InventoryController(
                 else -> ResponseEntity.ok(
                     UpdateProductResponse(
                         productRepository.save(updateProductRequest.updateFields(optProduct.get()))
-                    )
+                    ).also { println("put") }
                 )
             }
         }
+
+    @GetMapping
+    fun findAll(): MutableList<ProductEntity> = productRepository.findAll()
 }

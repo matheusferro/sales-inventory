@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType
 import org.springframework.data.mongodb.core.mapping.MongoId
 
 @Document
-@TypeAlias("PRODUCT_ENTITY")
+//@TypeAlias("PRODUCT_ENTITY")
 class ProductEntity (
     @Id
     @MongoId(FieldType.STRING)
