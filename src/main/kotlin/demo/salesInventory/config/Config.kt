@@ -11,14 +11,22 @@ import java.util.concurrent.Executors
 class Config {
 
     @Bean
-    fun messageListenerContainer(
+    fun messageListenerContainerConfig(
         template: MongoTemplate
     ): MessageListenerContainer {
-        println("creating messageListenerContainer")
-        val exec = Executors.newSingleThreadExecutor()
-        val container = DefaultMessageListenerContainer(template, exec)
+        /**
+         *  Here we can use the simple configuration:
+         *  val container = DefaultMessageListenerContainer(template)
+         *  container.start()
+         *  return container
+         */
+
+        // Or change the thread which will run messageListener
+        val container = DefaultMessageListenerContainer(
+            template,
+            Executors.newSingleThreadExecutor()
+        )
         container.start()
-        println(container.isRunning)
         return container
     }
 
