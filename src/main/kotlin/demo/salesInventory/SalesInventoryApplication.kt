@@ -2,11 +2,13 @@ package demo.salesInventory
 
 import com.mongodb.client.model.changestream.ChangeStreamDocument
 import com.mongodb.client.model.changestream.FullDocument
+import demo.salesInventory.conductor.ConductorAPI
 import demo.salesInventory.inventory.ProductEntity
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Bean
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.aggregation.Aggregation
@@ -19,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Criteria.where
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 
 @SpringBootApplication
+@EnableFeignClients
 @EnableMongoRepositories
 class SalesInventoryApplication {
 
@@ -27,12 +30,18 @@ class SalesInventoryApplication {
     @Bean
     fun commandLineRunner(
         template: MongoTemplate,
-        messageListenerContainer: MessageListenerContainer
+        messageListenerContainer: MessageListenerContainer,
+        conductor: ConductorAPI
     ): CommandLineRunner = CommandLineRunner {
         //This works with message listener
         val messageListenerImpl = MessageListener<ChangeStreamDocument<Document>, ProductEntity> {
             logger.info("${Thread.currentThread().name} - MessageListener ID:${it.body?.id ?: "ID NULL"}")
             logger.info("operationType: ${it.raw?.operationType?.name}")
+            val testBody = object {
+                val identType: String = "identTypeTest"
+                val contentId: String = "contentIdTest"
+            }
+            conductor.startWorkflow("add_netflix_identation", testBody)
         }
 
         val request = ChangeStreamRequest.builder()
