@@ -1,0 +1,22 @@
+[
+  {
+    "name": "calculate_capacity_status",
+    "retryCount": 3,
+    "retryLogic": "FIXED",
+    "retryDelaySeconds": 10,
+    "timeoutSeconds": 300,
+    "timeoutPolicy": "TIME_OUT_WF",
+    "responseTimeoutSeconds": 180,
+    "ownerEmail": "fakeemail@gmail.com"
+  },
+  {
+    "name": "update_catalog_capacity_status",
+    "retryCount": 3,
+    "retryLogic": "FIXED",
+    "retryDelaySeconds": 10,
+    "timeoutSeconds": 300,
+    "timeoutPolicy": "TIME_OUT_WF",
+    "responseTimeoutSeconds": 180,
+    "ownerEmail": "fakeemail@gmail.com"
+  }
+]

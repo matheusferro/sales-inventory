@@ -1,0 +1,38 @@
+{
+  "name": "capacity_status_update",
+  "description": "Verify and update catalog",
+  "version": 1,
+  "schemaVersion": 1,
+  "ownerEmail": "fakeemail@gmail.com",
+  "tasks": [
+    {
+      "name": "calculate_capacity_status",
+      "taskReferenceName": "calculate_capacity",
+      "inputParameters": {
+        "productId": "${workflow.input.productId}"
+      },
+      "type": "SIMPLE"
+    },
+    {
+      "name": "decide_task",
+      "taskReferenceName": "converter_decision",
+      "inputParameters": {
+        "case_value_param": "${calculate_capacity.output.converter_decision}"
+      },
+      "type": "DECISION",
+      "caseValueParam": "case_value_param",
+      "decisionCases": {
+        "true": [
+          {
+            "name": "update_catalog_capacity_status",
+            "taskReferenceName": "update_catalog_capacity",
+            "inputParameters": {
+              "productId": "${workflow.input.productId}"
+            },
+            "type": "SIMPLE"
+          }
+        ]
+      }
+    }
+  ]
+}

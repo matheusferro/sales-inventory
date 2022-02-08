@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.messaging.MessageListener
 import org.springframework.data.mongodb.core.messaging.MessageListenerContainer
 import org.springframework.data.mongodb.core.query.Criteria.where
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
+import java.lang.IllegalArgumentException
 
 @SpringBootApplication
 @EnableFeignClients
@@ -34,14 +35,14 @@ class SalesInventoryApplication {
         conductor: ConductorAPI
     ): CommandLineRunner = CommandLineRunner {
         //This works with message listener
-        val messageListenerImpl = MessageListener<ChangeStreamDocument<Document>, ProductEntity> {
-            logger.info("${Thread.currentThread().name} - MessageListener ID:${it.body?.id ?: "ID NULL"}")
-            logger.info("operationType: ${it.raw?.operationType?.name}")
+        val messageListenerImpl = MessageListener<ChangeStreamDocument<Document>, ProductEntity> { message ->
+            logger.info("MessageListener ID:${message.body?.id ?: "ID NULL"}")
+            logger.info("operationType: ${message.raw?.operationType?.name}")
             val testBody = object {
-                val identType: String = "identTypeTest"
+                val productId: String = message.body?.id ?: throw IllegalArgumentException("not found id")
                 val contentId: String = "contentIdTest"
             }
-            conductor.startWorkflow("add_netflix_identation", testBody)
+            conductor.startWorkflow("capacity_status_update", testBody)
         }
 
         val request = ChangeStreamRequest.builder()
