@@ -1,8 +1,8 @@
 {
   "name": "capacity_status_update",
   "description": "Verify and update catalog",
-  "version": 1,
-  "schemaVersion": 1,
+  "version": 2,
+  "schemaVersion": 2,
   "ownerEmail": "fakeemail@gmail.com",
   "tasks": [
     {
