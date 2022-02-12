@@ -8,12 +8,7 @@ data class UpdateProductRequest(
     val description: String,
     @field:Min(1)
     val quantity: Long
-) {
-    fun updateFields(entityFound: ProductEntity): ProductEntity = entityFound.also {
-        it.description = description
-        it.quantity = quantity
-    }
-}
+)
 
 data class UpdateProductResponse(
     val id: String,

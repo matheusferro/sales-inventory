@@ -26,7 +26,7 @@ class InventoryController(
                 true -> ResponseEntity.notFound().build()
                 else -> ResponseEntity.ok(
                     UpdateProductResponse(
-                        productRepository.save(updateProductRequest.updateFields(optProduct.get()))
+                        productRepository.save(optProduct.get().updateFields(updateProductRequest))
                     )
                 )
             }
@@ -34,4 +34,44 @@ class InventoryController(
 
     @GetMapping
     fun findAll(): MutableList<ProductEntity> = productRepository.findAll()
+
+    @PatchMapping("/{productId}/reservation")
+    fun reservationProduct(
+        @PathVariable("productId") productId: String,
+        @RequestBody reservationProductRequest: ReservationProductRequest
+    ): ResponseEntity<Any> =
+        productRepository.findById(productId).let { optProduct ->
+            return when (optProduct.isEmpty) {
+                true -> ResponseEntity.notFound().build()
+                else -> {
+                    if(optProduct.get().canDoReservation(reservationProductRequest.quantity)) ResponseEntity.unprocessableEntity()
+                    ResponseEntity.ok(
+                        UpdateProductResponse(
+                            productRepository.save(optProduct.get().doReservation(reservationProductRequest))
+                        )
+                    )
+                }
+            }
+        }
+
+    @PatchMapping("/{productId}/reservation/expired")
+    fun reservationExpired(
+        @PathVariable("productId") productId: String,
+        @RequestBody reservationExpiredRequest: ReservationExpiredRequest
+    ): ResponseEntity<Any> =
+        productRepository.findById(productId).let { optProduct ->
+            return when (optProduct.isEmpty) {
+                true -> ResponseEntity.notFound().build()
+                else -> {
+                    if(optProduct.get().reservation < reservationExpiredRequest.quantity) ResponseEntity.unprocessableEntity()
+                    ResponseEntity.ok(
+                        UpdateProductResponse(
+                            productRepository.save(optProduct.get().reservationExpired(reservationExpiredRequest))
+                        )
+                    )
+                }
+            }
+        }
+    //todo: function able to abstract not found response
+    //private fun executeIfProductExists() {}
 }
